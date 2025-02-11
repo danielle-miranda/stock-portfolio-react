@@ -54,14 +54,17 @@ class Portfolio extends React.Component {
                     market_price,
                   } = stock;
   
+                  const market_value = shares_owned * market_price;
+                  const unrealized_gain_loss = market_value - shares_owned * cost_per_share;
+
                   return (
                     <tr key={index}>
                       <td>{name}</td>
                       <td><input type="number" name="shares_owned" value={shares_owned} /></td>
                       <td><input type="number" name="cost_per_share" value={cost_per_share} /></td>
                       <td><input type="number" name="market_price" value={market_price} /></td>
-                      <td></td>
-                      <td></td>
+                      <td>{market_value}</td>
+                      <td>{unrealized_gain_loss}</td>
                       <td><button className="btn btn-light btn-sm">remove</button></td>
                     </tr>
                   )
