@@ -1,7 +1,6 @@
 class Portfolio extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       portfolio: [
         {
@@ -20,34 +19,48 @@ class Portfolio extends React.Component {
           cost_per_share: 20,
           market_price: 3
         }
-      ]
+      ],
+      form: {
+        name: '',
+        shares_owned: 0,
+        cost_per_share: 0,
+        market_price: 0
+      }
     };
-    // Note: api JSON data often come in underscore_styled like above
-
 
     this.removeStock = this.removeStock.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleFormChange = this.handleFormChange.bind(this);
+    this.addStock = this.addStock.bind(this);
   }
-
-
 
   removeStock(index) {
     const portfolio = this.state.portfolio.slice(); // shallow copy
     portfolio.splice(index, 1); // remove value at index
+
     this.setState({ portfolio });
   }
-
-
+  
   handleChange(event, index) {
     const portfolio = this.state.portfolio.slice(); // shallow copy
     const { name, value } = event.target;
+
     portfolio[index][name] = value;
     this.setState({ portfolio });
+  }
+
+  handleFormChange(event) {
+    const { name, value } = event.target;
+    const { form } = this.state;
+
+    form[name] = value;
+    this.setState({ form });
   }
 
   addStock(event) {
     event.preventDefault();
     const portfolio = this.state.portfolio.slice();
+
     portfolio.push(this.state.form);
     this.setState({
       portfolio,
@@ -62,12 +75,14 @@ class Portfolio extends React.Component {
   }
 
   render() {
-    const { portfolio, form } = this.state;
+    const {
+      portfolio,
+      form,
+    } = this.state;
     
     const portfolio_market_value = portfolio.reduce((sum, stock) => stock.shares_owned * stock.market_price + sum, 0);
     const portfolio_cost = portfolio.reduce((sum, stock) => stock.shares_owned * stock.cost_per_share + sum, 0);
     const portfolio_gain_loss = portfolio_market_value - portfolio_cost;
-
     return (
       <div className="container">
         <h1 className="text-center my-4">Stock Portfolio</h1>
@@ -93,9 +108,10 @@ class Portfolio extends React.Component {
                     cost_per_share,
                     market_price,
                   } = stock;
-  
+
                   const market_value = shares_owned * market_price;
                   const unrealized_gain_loss = market_value - shares_owned * cost_per_share;
+                  // Adopting the underscore_style for consistency
 
                   return (
                     <tr key={index}>
@@ -149,16 +165,17 @@ class Portfolio extends React.Component {
             <button className="btn btn-primary btn-sm">add</button>
           </form>
           <div className="col-12 col-md-6">
-          <h4 className="mb-3">Portfolio value: $ {portfolio_market_value}</h4>
+            <h4 className="mb-3">Portfolio value: $ {portfolio_market_value}</h4>
           </div>
           <div className="col-12 col-md-6">
-          <h4 className="mb-3">Portfolio gain/loss: $ {portfolio_gain_loss}</h4>
+            <h4 className="mb-3">Portfolio gain/loss: $ {portfolio_gain_loss}</h4>
           </div>
         </div>
       </div>
     );
   }
 }
+
 
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
